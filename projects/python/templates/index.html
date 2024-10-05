@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>思维导图生成器</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <h1>思维导图生成器</h1>
+    <textarea id="textInput" rows="10" cols="50" placeholder="在这里输入您的文本..."></textarea>
+    <br>
+    <button onclick="generateMindmap()">生成思维导图</button>
+    <br>
+    <img id="mindmapImage" src="" alt="生成的思维导图将显示在这里">
+
+    <script>
+        async function generateMindmap() {
+            const text = document.getElementById('textInput').value;
+            try {
+                const response = await axios.post('/generate_mindmap', {
+                    text: text
+                }, {
+                    responseType: 'blob'
+                });
+                const imageUrl = URL.createObjectURL(response.data);
+                document.getElementById('mindmapImage').src = imageUrl;
+            } catch (error) {
+                console.error('生成思维导图时出错:', error);
+                if (error.response) {
+                    console.error('错误响应:', error.response.data);
+                    alert(`生成思维导图时出错: ${error.response.data}`);
+                } else {
+                    alert('生成思维导图时出错，请检查控制台以获取更多信息。');
+                }
+            }
+        }
+    </script>
+</body>
+</html>
